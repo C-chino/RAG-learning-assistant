@@ -3,10 +3,15 @@ import os
 import sys
 
 # ==========================================
-# ⚠️ 必须放在最顶部：解决 Streamlit Cloud 上 ChromaDB 的 SQLite3 报错
+# 跨平台兼容：仅在 Linux（如 Streamlit Cloud）下启用 pysqlite3
+# Windows 本地开发不需要，强行导入会报 ModuleNotFoundError
 # ==========================================
-__import__('pysqlite3')
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+if os.name != 'nt':  # 'nt' 代表 Windows
+    try:
+        __import__('pysqlite3')
+        sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+    except ImportError:
+        pass
 
 import streamlit as st
 
@@ -19,18 +24,14 @@ os.makedirs(DATA_DIR, exist_ok=True)
 st.set_page_config(page_title="课程学习助手", page_icon="📚")
 st.title("课程学习助手")
 
-
 # ==========================================
 # 核心优化：使用 Streamlit 官方缓存加载模型
-# 保证 retriever 和 reranker 只在应用启动时加载一次，永不销毁
 # ==========================================
 @st.cache_resource
 def load_resources():
     retriever = get_retriever()
-    # 预加载重排模型，防止首次提问卡顿
     get_reranker()
     return retriever
-
 
 retriever = load_resources()
 
