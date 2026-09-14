@@ -15,8 +15,10 @@ RECALL_TOP_K = 10
 RERANK_TOP_K = 5
 USE_RERANK = True
 
-# ===== 模型配置（换回 small 和 base，防止云端内存溢出）=====
+# config.py
+# 换回 small 版本（约 100MB）
 EMBEDDING_MODEL = "BAAI/bge-small-zh-v1.5"
+# 换回 base 版本（约 400MB）
 RERANK_MODEL = "BAAI/bge-reranker-base"
 
 # ===== LLM 配置（本地 Ollama，云端 API）=====

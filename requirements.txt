@@ -9,3 +9,4 @@ chromadb
 pypdf
 sentence-transformers
 streamlit
+pysqlite3-binary
